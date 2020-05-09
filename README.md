@@ -1,14 +1,14 @@
-![Seamlessio logo](https://i.ibb.co/tMH5BYP/logo-with-name.png)
+![Seamlessio logo](https://i.ibb.co/ZfL0Pxh/Seamlessio-logo.jpg")
 
-# DevTaskBox V. 2
+# TaskBoxes
 
-This free PoC is test to see whether Quick Actions are so seamless they result in regular use of Task Boxes as a productivity tool. 
+This free tool is to see whether Quick Actions are so seamless they result in regular use of TaskBoxes as a productivity tool. 
 
 ## Using TaskBoxes
 
 The TaskBoxes Installation application will setup the TaskBox QuickActions, calendar, and directory for you. 
 
-When TaskBoxes first runs you will need to approve access to Calendar and Finder. You can see all the code with Automator
+When TaskBoxes first runs you will need to approve access to Calendar and Finder. You can see all the code with Automator by opening the TaskBoxes Installation with Automator.
 
 TaskBoxes Installation does the following:
 
@@ -21,7 +21,7 @@ Alternatively you can double click the Quick Actions, "Start Task" and "Stop Tas
 
 All four steps (calendar, folder, quick actions, and scripts) need to be setup for Task Boxes to work. 
 
-Quick Actions is available via the TouchBar under the Quick Actions Menu. 
+Quick Actions are available via the TouchBar under the Quick Actions Menu. 
 
 To edit the code, open the Quick Actions and TaskEnded files with Automator. Then you can see individual scripts and edit as needed. JXA and AppleScript is used. 
 
@@ -32,6 +32,6 @@ To edit the code, open the Quick Actions and TaskEnded files with Automator. The
 
 ## Learn JXA by Example
 
-* [JXA Snippets](https://github.com/SeamlessIO/JXA-Snippets)
+* [JXA Snippets Collection](https://seamlessio.com/articles/jxa-snippets-collection)
 
 

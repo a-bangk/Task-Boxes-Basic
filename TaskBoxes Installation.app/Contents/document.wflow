@@ -60,31 +60,30 @@
 				<dict>
 					<key>COMMAND_STRING</key>
 					<string>#!/bin/bash 
-# This script copies
+# This script copies Quick Actions and Scripts to their locations to run. 
 
 QUICKACTIONSDIR=$HOME/Library/Services
 SCRIPTSDIR=$HOME/Library/Scripts
-TASKBOXDIR="$HOME/Documents/Task Boxes"
+TASKBOXESDIR="$HOME/Documents/Task Boxes"
 
 if [[ -d "$QUICKACTIONSDIR" ]]
 then
-    cp QuickActions/* $QUICKACTIONSDIR
+    cp -r QuickActions/* $QUICKACTIONSDIR
     echo "Copied QuickActions into ~/Library/Services"
 fi
 
 
 if [[ -d $SCRIPTSDIR ]]
 then
-    cp Scripts/* $SCRIPTSDIR/
+    cp -r Scripts/* $SCRIPTSDIR/
     echo "Copied files into ~/Library/Scripts."
 fi
 
-if [[ -d "$TASKBOXDIR" ]]
+if [[ -d "$TASKBOXESDIR" ]]
 then
-    cp Services/* $QUICKACTIONSDIR
-    echo "Task Box already exists on your filesystem."
+    echo "Task Boxes already exists on your filesystem."
 else
-    mkdir $TASKBOXDIR
+    mkdir $TASKBOXESDIR
 fi</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
@@ -198,7 +197,7 @@ fi</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>493.500000:252.000000</string>
+				<string>433.250000:252.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -246,7 +245,7 @@ fi</string>
 				<key>ActionParameters</key>
 				<dict>
 					<key>source</key>
-					<string>//Creates local Task Box Calendar		var Calendar = Application("Calendar")var calendarName = "Task Boxes"var calendarDescription = "Calendar for keeping track of Task Boxes."var newCalendar = Calendar.Calendar({name: calendarName, description: calendarDescription}).make()</string>
+					<string>//Creates local Task Box Calendarvar Calendar = Application("Calendar")var calendarName = "TaskBoxes"var calendarDescription = "Calendar for keeping track of TaskBoxes."var newCalendar = Calendar.Calendar({name: calendarName, description: calendarDescription}).make()//Notify completionvar app = Application.currentApplication()app.includeStandardAdditions = trueapp.displayNotification("TaskBoxes Setup Complete.", {    withTitle: "TaskBoxes Setup Complete.",    subtitle: "You ready to use TaskBoxes",    soundName: "Frog"})</string>
 				</dict>
 				<key>BundleIdentifier</key>
 				<string>com.apple.Automator.RunJavaScript</string>
@@ -301,7 +300,7 @@ fi</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>493.500000:497.000000</string>
+				<string>433.250000:497.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run JavaScript.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -311,7 +310,7 @@ fi</string>
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>FB3DAE00-4276-4E7C-9141-95A82FA57B0A</key>
+		<key>C77BA14B-0618-4631-A77B-18E4DD2019C0</key>
 		<dict>
 			<key>from</key>
 			<string>60C1388C-547F-4937-9C6F-D27B1F324862 - 60C1388C-547F-4937-9C6F-D27B1F324862</string>

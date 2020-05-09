@@ -21,109 +21,6 @@
 					<true/>
 					<key>Types</key>
 					<array>
-						<string>com.apple.applescript.object</string>
-					</array>
-				</dict>
-				<key>AMActionVersion</key>
-				<string>1.0</string>
-				<key>AMApplication</key>
-				<array>
-					<string>Automator</string>
-				</array>
-				<key>AMParameterProperties</key>
-				<dict>
-					<key>source</key>
-					<dict/>
-				</dict>
-				<key>AMProvides</key>
-				<dict>
-					<key>Container</key>
-					<string>List</string>
-					<key>Types</key>
-					<array>
-						<string>com.apple.applescript.object</string>
-					</array>
-				</dict>
-				<key>ActionBundlePath</key>
-				<string>/System/Library/Automator/Run JavaScript.action</string>
-				<key>ActionName</key>
-				<string>Run JavaScript</string>
-				<key>ActionParameters</key>
-				<dict>
-					<key>source</key>
-					<string>// Recreates the Task Event once that task has ended with new description// Deletes the event it replaces// Used in Stop Task Quick Action and TaskEnded Application// Add standard library for dialog boxesvar app = Application.currentApplication()app.includeStandardAdditions = true//Set Calendar to be the Application Calendarvar Calendar = Application('Calendar') //Set name of Calendar you are usingvar calendarUsed = "Task Box"//use Demo as the used Calendar by searching for it.var projectCalendars = Calendar.calendars.whose({name: calendarUsed})//Use the first result that matches name searchvar projectCalendar = projectCalendars[0]//TODO Find better way to ID event, maybe it can be loaded in from Launchd. //You need the time now as an objectvar timeNow = new Date()//Create Date object one day ago for search criteria to narrow down sort of recent ents. var oneDay = 86400000;var aDayAgo = new Date(new Date() - oneDay);var recentEventsSearch = projectCalendar.events.whose({	_and: [		{ startDate: { _greaterThan: aDayAgo }}, 		{ startDate: { _lessThan: timeNow}}	]});//Assign the results of the search to a new variablerecentEvents = recentEventsSearch()recentEvents.sort(function (a,b){	if (a.startDate() &gt; b.startDate()) return -1;	if (a.startDate() &lt; b.startDate()) return 1;	return 0	});	//set recentEvent to be the first in the results of sort as sort is decending order var recentEvent = recentEvents[0]// Errors because event was more than hour ago. var recentEventId = recentEvent.id()// Ask for description of what was done during the task box// TODO provide contents if any of current descriptionvar response = app.displayDialog("What did you actually work on?", {    defaultAnswer: "",    withIcon: "note",    buttons: ["Cancel", "Continue"],    defaultButton: "Continue"})var whatWasDone = response.textReturned;//Pull out the summary, startDate of recentEvent//Create new event with values from prrvious event and end time of timeNownewEvent=Calendar.Event({summary: recentEvent.summary(), startDate: recentEvent.startDate(), endDate: timeNow, description: whatWasDone})// Push the event to the calendarprojectCalendar.events.push(newEvent)//Delete the event with the old end time.try {Calendar.delete(projectCalendar.events.byId(recentEventId))}catch(err){	var errorMsg = app.displayDialog("Error", {	buttons: ["Cancel", "Continue"],	defaultButton: "Continue"	})}</string>
-				</dict>
-				<key>BundleIdentifier</key>
-				<string>com.apple.Automator.RunJavaScript</string>
-				<key>CFBundleVersion</key>
-				<string>1.0</string>
-				<key>CanShowSelectedItemsWhenRun</key>
-				<false/>
-				<key>CanShowWhenRun</key>
-				<true/>
-				<key>Category</key>
-				<array>
-					<string>AMCategoryUtilities</string>
-				</array>
-				<key>Class Name</key>
-				<string>RunJavaScriptAction</string>
-				<key>InputUUID</key>
-				<string>B788E90E-0855-4744-A13B-DD330187F1DB</string>
-				<key>Keywords</key>
-				<array>
-					<string>Run</string>
-					<string>JavaScript</string>
-				</array>
-				<key>OutputUUID</key>
-				<string>EAC47F52-0085-441F-82EB-316836381C3A</string>
-				<key>UUID</key>
-				<string>46DE9844-6188-4033-A4E0-01F31F1A7266</string>
-				<key>UnlocalizedApplications</key>
-				<array>
-					<string>Automator</string>
-				</array>
-				<key>arguments</key>
-				<dict>
-					<key>0</key>
-					<dict>
-						<key>default value</key>
-						<string>function run(input, parameters) {
-	
-	// Your script goes here
-
-	return input;
-}</string>
-						<key>name</key>
-						<string>source</string>
-						<key>required</key>
-						<string>0</string>
-						<key>type</key>
-						<string>0</string>
-						<key>uuid</key>
-						<string>0</string>
-					</dict>
-				</dict>
-				<key>isViewVisible</key>
-				<true/>
-				<key>location</key>
-				<string>693.500000:315.000000</string>
-				<key>nibPath</key>
-				<string>/System/Library/Automator/Run JavaScript.action/Contents/Resources/Base.lproj/main.nib</string>
-			</dict>
-			<key>isViewVisible</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>action</key>
-			<dict>
-				<key>AMAccepts</key>
-				<dict>
-					<key>Container</key>
-					<string>List</string>
-					<key>Optional</key>
-					<true/>
-					<key>Types</key>
-					<array>
 						<string>com.apple.cocoa.string</string>
 					</array>
 				</dict>
@@ -277,9 +174,112 @@ launchctl unload /Users/adkj/Library/Scripts/com.seamlessio.devtaskbox.endtask.p
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>693.500000:497.000000</string>
+				<string>433.250000:252.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
+			</dict>
+			<key>isViewVisible</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>action</key>
+			<dict>
+				<key>AMAccepts</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Optional</key>
+					<true/>
+					<key>Types</key>
+					<array>
+						<string>com.apple.applescript.object</string>
+					</array>
+				</dict>
+				<key>AMActionVersion</key>
+				<string>1.0</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>AMParameterProperties</key>
+				<dict>
+					<key>source</key>
+					<dict/>
+				</dict>
+				<key>AMProvides</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Types</key>
+					<array>
+						<string>com.apple.applescript.object</string>
+					</array>
+				</dict>
+				<key>ActionBundlePath</key>
+				<string>/System/Library/Automator/Run JavaScript.action</string>
+				<key>ActionName</key>
+				<string>Run JavaScript</string>
+				<key>ActionParameters</key>
+				<dict>
+					<key>source</key>
+					<string>// Recreates the Task Event once that task has ended with new description// Deletes the event it replaces// Used in Stop Task Quick Action and TaskEnded Application// Add standard library for dialog boxesvar app = Application.currentApplication();app.includeStandardAdditions = true;//Set vars for used Appsvar Music = Application('Music');var Calendar = Application('Calendar'); //Set name of Calendar you are usingvar calendarUsed = 'Task Boxes';//use Demo as the used Calendar by searching for it.var projectCalendars = Calendar.calendars.whose({name: calendarUsed})//Use the first result that matches name search, assumes only one resultvar projectCalendar = projectCalendars[0]//You need the time now as an objectvar timeNow = new Date()//Create Date object one day ago for search criteria to narrow down sort of recent ents. var oneDay = 86400000;var aDayAgo = new Date(new Date() - oneDay);var recentEventsSearch = projectCalendar.events.whose({	_and: [		{ startDate: { _greaterThan: aDayAgo }}, 		{ startDate: { _lessThan: timeNow}}	]});//Assign the results of the search to a new variablerecentEvents = recentEventsSearch()recentEvents.sort(function (a,b){	if (a.startDate() &gt; b.startDate()) return -1;	if (a.startDate() &lt; b.startDate()) return 1;	return 0	});	//set recentEvent to be the first in the results of sort as sort is decending order var recentEvent = recentEvents[0]// Errors because event was more than hour ago. var recentEventId = recentEvent.id()// Stop music playingMusic.pause()// Ask for description of what was done during the task box// TODO provide contents if any of current descriptionvar response = app.displayDialog("What did you actually work on?", {    defaultAnswer: "",    withIcon: "note",    buttons: ["Cancel", "Continue"],    defaultButton: "Continue"})var whatWasDone = response.textReturned;//Pull out the summary, startDate of recentEvent//Create new event with values from prrvious event and end time of timeNownewEvent=Calendar.Event({summary: recentEvent.summary(), startDate: recentEvent.startDate(), endDate: timeNow, description: whatWasDone})// Push the event to the calendarprojectCalendar.events.push(newEvent)//Delete the event with the old end time.try {Calendar.delete(projectCalendar.events.byId(recentEventId))}catch(err){	var errorMsg = app.displayDialog("Error", {	buttons: ["Cancel", "Continue"],	defaultButton: "Continue"	})}// Cancel all Active timersapp.openLocation("timer://cancel")</string>
+				</dict>
+				<key>BundleIdentifier</key>
+				<string>com.apple.Automator.RunJavaScript</string>
+				<key>CFBundleVersion</key>
+				<string>1.0</string>
+				<key>CanShowSelectedItemsWhenRun</key>
+				<false/>
+				<key>CanShowWhenRun</key>
+				<true/>
+				<key>Category</key>
+				<array>
+					<string>AMCategoryUtilities</string>
+				</array>
+				<key>Class Name</key>
+				<string>RunJavaScriptAction</string>
+				<key>InputUUID</key>
+				<string>B788E90E-0855-4744-A13B-DD330187F1DB</string>
+				<key>Keywords</key>
+				<array>
+					<string>Run</string>
+					<string>JavaScript</string>
+				</array>
+				<key>OutputUUID</key>
+				<string>EAC47F52-0085-441F-82EB-316836381C3A</string>
+				<key>UUID</key>
+				<string>46DE9844-6188-4033-A4E0-01F31F1A7266</string>
+				<key>UnlocalizedApplications</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>arguments</key>
+				<dict>
+					<key>0</key>
+					<dict>
+						<key>default value</key>
+						<string>function run(input, parameters) {
+	
+	// Your script goes here
+
+	return input;
+}</string>
+						<key>name</key>
+						<string>source</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>0</string>
+					</dict>
+				</dict>
+				<key>isViewVisible</key>
+				<true/>
+				<key>location</key>
+				<string>433.250000:497.000000</string>
+				<key>nibPath</key>
+				<string>/System/Library/Automator/Run JavaScript.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
 			<key>isViewVisible</key>
 			<true/>
@@ -287,12 +287,12 @@ launchctl unload /Users/adkj/Library/Scripts/com.seamlessio.devtaskbox.endtask.p
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>460AD405-4CBB-425C-BD4E-51396893CDEB</key>
+		<key>9874E301-E423-4826-B95A-01FFAED374BA</key>
 		<dict>
 			<key>from</key>
-			<string>46DE9844-6188-4033-A4E0-01F31F1A7266 - 46DE9844-6188-4033-A4E0-01F31F1A7266</string>
-			<key>to</key>
 			<string>79AF7DD6-61AA-4347-879D-7251E02DD3F9 - 79AF7DD6-61AA-4347-879D-7251E02DD3F9</string>
+			<key>to</key>
+			<string>46DE9844-6188-4033-A4E0-01F31F1A7266 - 46DE9844-6188-4033-A4E0-01F31F1A7266</string>
 		</dict>
 	</dict>
 	<key>workflowMetaData</key>
