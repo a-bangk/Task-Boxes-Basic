@@ -32,6 +32,6 @@ To edit the code, open the Quick Actions and TaskEnded files with Automator. The
 
 ## Learn JXA by Example
 
-* [JXA Snippets Collection](https://seamlessio.com/articles/jxa-snippets-collection)
+* [JXA Snippets Collection](https://www.seamlessio.com/articles/jxa-snippets-collection)
 
 
