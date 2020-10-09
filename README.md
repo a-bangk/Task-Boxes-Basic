@@ -7,7 +7,7 @@ This free tool is to see whether macOS 10.15 Quick Actions are so seamless they 
 The Install directory contains automated install scripts.
 The Code directory contains the code for modiyfication and manual setup.
 
-### From Install
+### From Install (Not Tested)
 
 The TaskBoxes Installation application will setup the TaskBox QuickActions, calendar, and directory for you.
 
