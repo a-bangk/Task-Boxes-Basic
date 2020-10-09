@@ -42,6 +42,8 @@ To edit the code, open the Quick Actions and TaskEnded files with Automator. The
 
 ### 0.1 [2020/0/08]
 
+* Remade to use python calendar event creation
+
 ### NA [Prior to 2020/10]
 
 * Worked using only JXA commands
