@@ -27,10 +27,10 @@ def create_event(summary, description, start_time_zone = 'Europe/Copenhagen', en
     has default values for start time, endtime, and timezones.
     """
     now= datetime.now()
-    in1hour = now+timedelta(hours=1)
+    in_30_min = now+timedelta(hours=0.5)
 
     start_time=now.strftime("%Y-%m-%dT%H:%M:%S")
-    end_time=in1hour.strftime("%Y-%m-%dT%H:%M:%S")
+    end_time=in_30_min.strftime("%Y-%m-%dT%H:%M:%S")
 
     event = {
         'summary': summary,

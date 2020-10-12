@@ -5,28 +5,7 @@ This free tool is to see whether macOS 10.15 Quick Actions are so seamless they 
 ## How to Run
 
 The Install directory contains automated install scripts.
-The Code directory contains the code for modiyfication and manual setup.
-
-### From Install (Not Tested)
-
-The TaskBoxes Installation application will setup the TaskBox QuickActions, calendar, and directory for you.
-
-When TaskBoxes first runs you will need to approve access to Calendar and Finder. You can see all the code with Automator by opening the TaskBoxes Installation with Automator.
-
-TaskBoxes Installation does the following:
-
-1. Creates a local Calendar called "Task Boxes"
-2. Creates A folder ~/Documents/Task Boxes
-3. Copies QuickActions "Stop Task" and "Start Task" in ~/Library/Services/
-4. Copies scripts "TaskEnded" and "plist" file into ~/Library/Scripts/
-
-Alternatively you can double click the Quick Actions, "Start Task" and "Stop Task" Mac OS will suggest moving them to the correct location, which is ~/Library/Services
-
-All four steps (calendar, folder, quick actions, and scripts) need to be setup for Task Boxes to work.
-
-Quick Actions are available via the TouchBar under the Quick Actions Menu.
-
-To edit the code, open the Quick Actions and TaskEnded files with Automator. Then you can see individual scripts and edit as needed. JXA and AppleScript is used. 
+The Code directory contains the code for modification and manual setup.
 
 ### From Code
 
@@ -40,9 +19,20 @@ To edit the code, open the Quick Actions and TaskEnded files with Automator. The
 
 ## Change Log
 
-### 0.1 [2020/0/08]
+### 0.2 [2020/10/12]
+
+* Added Pages to open Box file for Task Box. Note: first open the files in finder to avoid Permission denied
+* 3 versions of Start scripts; Task, Half, and mini for 60, 30, and 10 minutes
+* Opening Quick Actions will install them as needed, python scripts need to be copied to ~/Library/Scripts
+* Removed broken install files
+
+### 0.1 [2020/10/08]
 
 * Remade to use python calendar event creation
+* calendar is hardcoded
+* accepts summary and description as arguments
+* Requires credentails.json file present, see How to Run
+
 
 ### NA [Prior to 2020/10]
 
