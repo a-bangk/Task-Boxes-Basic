@@ -2,9 +2,13 @@
 
 from __future__ import print_function
 
+"""Adding 1 hour events to the Task Box calendar from the CLI.
+The first argument is a the title of the event and the second is the summary of 
+the event.
 
-r"""Adding 1 hour events to the Task Box calendar from the CLI.
-The first argument is a the title of the event and the second is the summary of the event.
+Arguments are:
+[1] Name of event
+[2] Description of event
 """
 
 import sys
@@ -52,9 +56,11 @@ def add_to_google_cal(event_json):
     """
 
     calendar_id = 'n0b52mn64j556f5286i3v8ii24@group.calendar.google.com'
-    pickle_location = '/Users/adkj/Library/Scripts/Start Task Python/token.pickle'
+    pickle_location = '/Users/adkj/Library/Scripts/Start Task Python/' \
+                      'token.pickle'
 
-    credentials_location = '/Users/adkj/Library/Scripts/Start Task Python/credentials.json'
+    credentials_location = '/Users/adkj/Library/Scripts/Start Task Python/' \
+                           'credentials.json'
     creds = None
 
     # The file token.pickle stores the user's access and refresh tokens, and is

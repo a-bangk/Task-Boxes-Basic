@@ -30,9 +30,9 @@ var currentUser = SystemEvents.currentUser.name();
 var logFile = homeDir + "/Library/Logs/akjems/TaskBox/startTaskPython.log"
 var taskBoxesDir = homeDir + "/Documents/Task\ Boxes/"
 
-// Changing main.py to 30min.py and mini.py changes lenght of event created in calendar
-var pythonMain = "." + homeDir + "/Library/Scripts/Start\\\ Task\\\ Python/venv/bin/python3 "+homeDir+"/Library/Scripts/Start\\\ Task\\\ Python/main.py"
-
+// Changing main.py to 30min.py and mini.py changes length of event created in calendar
+//var pythonMain = "." + homeDir + "/Library/Scripts/Start\\\ Task\\\ Python/venv/bin/python3 " + homeDir + "/Library/Scripts/Start\\\ Task\\\ Python/main.py"
+var pythonMain = "." + homeDir + "/Documents/Task\\\ Boxes/DevTaskBoxes/Code/TaskBoxes/Code/python3/.env/bin/python3 " + homeDir + "/Documents/Task\\\ Boxes/DevTaskBoxes/Code/TaskBoxes/Code/python3/task/main.py"
 
 writeToLog("Start Task launched", logFile, true)
 
@@ -97,7 +97,6 @@ if (taskBox) {
         //Open Finder Location
         var strPath = $(dirUsed).stringByStandardizingPath.js
         Finder.reveal(Path(strPath));
-        Pages.open(dirUsed+'/Box.pages');
 
 
         // Bring the wanted apps to the front
