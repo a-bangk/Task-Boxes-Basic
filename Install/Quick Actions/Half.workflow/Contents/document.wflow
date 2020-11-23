@@ -1,237 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>AMApplicationBuild</key>
-	<string>492</string>
-	<key>AMApplicationVersion</key>
-	<string>2.10</string>
-	<key>AMDocumentVersion</key>
-	<string>2</string>
-	<key>actions</key>
-	<array>
-		<dict>
-			<key>action</key>
-			<dict>
-				<key>AMAccepts</key>
-				<dict>
-					<key>Container</key>
-					<string>List</string>
-					<key>Optional</key>
-					<true/>
-					<key>Types</key>
-					<array>
-						<string>com.apple.applescript.object</string>
-					</array>
-				</dict>
-				<key>AMActionVersion</key>
-				<string>1.0</string>
-				<key>AMApplication</key>
-				<array>
-					<string>Automator</string>
-				</array>
-				<key>AMParameterProperties</key>
-				<dict>
-					<key>source</key>
-					<dict/>
-				</dict>
-				<key>AMProvides</key>
-				<dict>
-					<key>Container</key>
-					<string>List</string>
-					<key>Types</key>
-					<array>
-						<string>com.apple.applescript.object</string>
-					</array>
-				</dict>
-				<key>ActionBundlePath</key>
-				<string>/System/Library/Automator/Run JavaScript.action</string>
-				<key>ActionName</key>
-				<string>Run JavaScript</string>
-				<key>ActionParameters</key>
-				<dict>
-					<key>source</key>
-					<string>// The Task Box starter script combines JXA with python commands// JXA handles OS tasks such as opening reminders and playing music// Python handles calendar event creation, becasue this was failing irregularly when run as JXA commands// Script does does the following// 1. Lists directory in ~/Documents/Task Boxes as a choices in a list// 2. Asks to specify task, used in description of task// 3. Opens relevant directory and reminder list// 4. Start Music// 5. Start python script passing in the information gathered    //1. Creates a calendar event in google calendar // Include standard Additionsconst app = Application.currentApplication()app.includeStandardAdditions = true// Set vars for Apps usedconst Finder = Application('Finder');const Reminders = Application('Reminders');const SystemEvents = Application('System Events')const Music = Application('Music');
-const Pages = Application('Pages');// Assigned variables from startvar homeDir = SystemEvents.currentUser.homeDirectory();var currentUser = SystemEvents.currentUser.name();var logFile = homeDir + "/Library/Logs/akjems/TaskBox/startTaskPython.log"var taskBoxesDir = homeDir + "/Documents/Task\ Boxes/"var pythonMain = "." + homeDir + "/Library/Scripts/Start\\\ Task\\\ Python/venv/bin/python3 "+homeDir+"/Library/Scripts/Start\\\ Task\\\ Python/30min.py"writeToLog("Start Task launched", logFile, true)// Alphabetize the list of folders that represent taskBoxesvar taskBoxChoices = listDirectory(taskBoxesDir)taskBoxChoices.sort();// Remove .DS_Store from the list of optionstaskBoxChoices.splice(taskBoxChoices.indexOf('.DS_Store'), 1);try {	var taskBox = app.chooseFromList(taskBoxChoices, {  	  withPrompt: "What are you working on ?",  	  defaultItems: ["other"],	  cancelButton: "Cancel"	})	} catch(err) {		writeToLog("FAILED get Task Box selection", errorLogFile, true)	}if (taskBox) {    writeToLog("Received selection " + taskBox + "\n", logFile, true)    // Prep to show Reminders so we know what there is to work on before specifically choosing    if (Reminders.lists.byName(taskBox).exists()) {        Reminders.lists.byName(taskBox).show();    } else {        // TODO ask and store if they want a list created        var newReminderList = Reminders.List({            name: taskBox        });        Reminders.lists.push(newReminderList);        Reminders.lists.byName(taskBox).show()    }    try {        Reminders.activate();    } catch (err) {        writeToLog("ERROR open Reminders", errorLogFile, true)    }    writeToLog("Activated Reminders", logFile, true)    // Set directory that will be opened by finder    var dirUsed = taskBoxesDir + taskBox	writeToLog("dirUsed is" + dirUsed, logFile, true)	// without Delay it prompt would not come up	delay(2)	// See guidedPrompt function at button	var workingOn = guidedPrompt("Specifically?");  	writeToLog("Prompted specifics", logFile, true)    // Exit script if cancelled    if (workingOn) {        // Result to be used in calendar event creation        writeToLog("Received specific task " + workingOn + "\n", logFile, true)	        //Open Finder Location        var strPath = $(dirUsed).stringByStandardizingPath.js        Finder.reveal(Path(strPath));
-		Pages.open(dirUsed+'/Box.pages')        // Bring the wanted apps to the front        Finder.activate();        writeToLog("Activated finder", logFile, true)		try{		Music.play();		} catch(err){		            writeToLog("FAILED to Play music", errorLogFile, true)					};		        shellScriptCommand = pythonMain+ " \'" + taskBox + "\' \'" + workingOn + "\'"        writeToLog(shellScriptCommand, logFile,true)        app.doShellScript(shellScriptCommand);    } else {        writeToLog("User cancelled start", logFile, true);        //TODO Fails to quit, but works on own script        //Application('Reminders').quit();    }} else {    writeToLog("User cancelled start", logFile, true)}// Prompt Functionfunction guidedPrompt(text) {	var options = {defaultAnswer: taskBox + " - ",            withIcon: "note",            buttons: ["Cancel", "Continue"],            defaultButton: "Continue"        }	try {    	return app.displayDialog(text,options).textReturned  } catch (e) {    return null  }}// Function to read in folder names contents for arrayfunction listDirectory(strPath) {    fm = fm || $.NSFileManager.defaultManager;    return ObjC.unwrap(            fm.contentsOfDirectoryAtPathError($(strPath)                .stringByExpandingTildeInPath, null))        .map(ObjC.unwrap);}var fm = $.NSFileManager.defaultManager;// A single function to write to log with date, user, and eventfunction writeToLog(msg, file) {    try {        // Convert the file to a string        var fileString = file.toString()        // Open the file for writing        var openedFile = app.openForAccess(Path(fileString), {            writePermission: true        })        var d = new Date()        isoDate = new Date(d.getTime() - (d.getTimezoneOffset() * 90000)).toISOString();        logEntry = "\n" + isoDate + " " + currentUser + " " + msg        //logEntry = d.toISOString().concat(" ", text, "\n")        // Write the new content to the file        app.write(logEntry, {            to: openedFile,            startingAt: app.getEof(openedFile)        })        // Close the file        app.closeAccess(openedFile)        // Return a boolean indicating that writing was successful        return true    } catch (error) {        try {            // Close the file            app.closeAccess(file)        } catch (error) {            // Report the error is closing failed            console.log(`Couldn't close file: ${error}`)        }        // Return a boolean indicating that writing was successful        return false    }}</string>
-				</dict>
-				<key>BundleIdentifier</key>
-				<string>com.apple.Automator.RunJavaScript</string>
-				<key>CFBundleVersion</key>
-				<string>1.0</string>
-				<key>CanShowSelectedItemsWhenRun</key>
-				<false/>
-				<key>CanShowWhenRun</key>
-				<true/>
-				<key>Category</key>
-				<array>
-					<string>AMCategoryUtilities</string>
-				</array>
-				<key>Class Name</key>
-				<string>RunJavaScriptAction</string>
-				<key>InputUUID</key>
-				<string>B6D3F40A-60BF-4B59-B6C6-6FD373B9184A</string>
-				<key>Keywords</key>
-				<array>
-					<string>Run</string>
-					<string>JavaScript</string>
-				</array>
-				<key>OutputUUID</key>
-				<string>6FBEA4DD-D003-48B1-9862-AF1AE61FA09B</string>
-				<key>UUID</key>
-				<string>A7C9D303-5339-4AA7-830C-F1E7A15DF333</string>
-				<key>UnlocalizedApplications</key>
-				<array>
-					<string>Automator</string>
-				</array>
-				<key>arguments</key>
-				<dict>
-					<key>0</key>
-					<dict>
-						<key>default value</key>
-						<string>function run(input, parameters) {
-	
-	// Your script goes here
-
-	return input;
-}</string>
-						<key>name</key>
-						<string>source</string>
-						<key>required</key>
-						<string>0</string>
-						<key>type</key>
-						<string>0</string>
-						<key>uuid</key>
-						<string>0</string>
-					</dict>
-				</dict>
-				<key>isViewVisible</key>
-				<true/>
-				<key>location</key>
-				<string>468.000000:368.000000</string>
-				<key>nibPath</key>
-				<string>/System/Library/Automator/Run JavaScript.action/Contents/Resources/Base.lproj/main.nib</string>
-			</dict>
-			<key>isViewVisible</key>
-			<true/>
-		</dict>
-	</array>
-	<key>connectors</key>
-	<dict/>
-	<key>workflowMetaData</key>
-	<dict>
-		<key>applicationBundleIDsByPath</key>
-		<dict/>
-		<key>applicationPaths</key>
-		<array/>
-		<key>backgroundColor</key>
-		<data>
-		YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9i
-		amVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGpCwwXGBki
-		KCkwVSRudWxs1Q0ODxAREhMUFRZWJGNsYXNzW05TQ29sb3JOYW1lXE5TQ29s
-		b3JTcGFjZV1OU0NhdGFsb2dOYW1lV05TQ29sb3KACIADEAaAAoAEVlN5c3Rl
-		bV8QEXN5c3RlbU9yYW5nZUNvbG9y1RobDxwNHR4fIBJcTlNDb21wb25lbnRz
-		VU5TUkdCXxASTlNDdXN0b21Db2xvclNwYWNlSTEgMC41IDAgMU8QKDAuOTg5
-		MjI4MzY3OCAwLjQxNTMxMzk1OTEgMC4wMzE4MjA0MDE1NQAQAYAFgAjTIyQN
-		JSYnVE5TSURVTlNJQ0MQB4AGgAdPEQxIAAAMSExpbm8CEAAAbW50clJHQiBY
-		WVogB84AAgAJAAYAMQAAYWNzcE1TRlQAAAAASUVDIHNSR0IAAAAAAAAAAAAA
-		AAAAAPbWAAEAAAAA0y1IUCAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-		AAAAAAAAAAAAAAAAAAAAAAAAAAARY3BydAAAAVAAAAAzZGVzYwAAAYQAAABs
-		d3RwdAAAAfAAAAAUYmtwdAAAAgQAAAAUclhZWgAAAhgAAAAUZ1hZWgAAAiwA
-		AAAUYlhZWgAAAkAAAAAUZG1uZAAAAlQAAABwZG1kZAAAAsQAAACIdnVlZAAA
-		A0wAAACGdmlldwAAA9QAAAAkbHVtaQAAA/gAAAAUbWVhcwAABAwAAAAkdGVj
-		aAAABDAAAAAMclRSQwAABDwAAAgMZ1RSQwAABDwAAAgMYlRSQwAABDwAAAgM
-		dGV4dAAAAABDb3B5cmlnaHQgKGMpIDE5OTggSGV3bGV0dC1QYWNrYXJkIENv
-		bXBhbnkAAGRlc2MAAAAAAAAAEnNSR0IgSUVDNjE5NjYtMi4xAAAAAAAAAAAA
-		AAASc1JHQiBJRUM2MTk2Ni0yLjEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-		AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFhZWiAAAAAAAADzUQABAAAAARbM
-		WFlaIAAAAAAAAAAAAAAAAAAAAABYWVogAAAAAAAAb6IAADj1AAADkFhZWiAA
-		AAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9kZXNjAAAAAAAA
-		ABZJRUMgaHR0cDovL3d3dy5pZWMuY2gAAAAAAAAAAAAAABZJRUMgaHR0cDov
-		L3d3dy5pZWMuY2gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-		AAAAAAAAAAAAAAAAZGVzYwAAAAAAAAAuSUVDIDYxOTY2LTIuMSBEZWZhdWx0
-		IFJHQiBjb2xvdXIgc3BhY2UgLSBzUkdCAAAAAAAAAAAAAAAuSUVDIDYxOTY2
-		LTIuMSBEZWZhdWx0IFJHQiBjb2xvdXIgc3BhY2UgLSBzUkdCAAAAAAAAAAAA
-		AAAAAAAAAAAAAAAAAGRlc2MAAAAAAAAALFJlZmVyZW5jZSBWaWV3aW5nIENv
-		bmRpdGlvbiBpbiBJRUM2MTk2Ni0yLjEAAAAAAAAAAAAAACxSZWZlcmVuY2Ug
-		Vmlld2luZyBDb25kaXRpb24gaW4gSUVDNjE5NjYtMi4xAAAAAAAAAAAAAAAA
-		AAAAAAAAAAAAAAAAAAB2aWV3AAAAAAATpP4AFF8uABDPFAAD7cwABBMLAANc
-		ngAAAAFYWVogAAAAAABMCVYAUAAAAFcf521lYXMAAAAAAAAAAQAAAAAAAAAA
-		AAAAAAAAAAAAAAKPAAAAAnNpZyAAAAAAQ1JUIGN1cnYAAAAAAAAEAAAAAAUA
-		CgAPABQAGQAeACMAKAAtADIANwA7AEAARQBKAE8AVABZAF4AYwBoAG0AcgB3
-		AHwAgQCGAIsAkACVAJoAnwCkAKkArgCyALcAvADBAMYAywDQANUA2wDgAOUA
-		6wDwAPYA+wEBAQcBDQETARkBHwElASsBMgE4AT4BRQFMAVIBWQFgAWcBbgF1
-		AXwBgwGLAZIBmgGhAakBsQG5AcEByQHRAdkB4QHpAfIB+gIDAgwCFAIdAiYC
-		LwI4AkECSwJUAl0CZwJxAnoChAKOApgCogKsArYCwQLLAtUC4ALrAvUDAAML
-		AxYDIQMtAzgDQwNPA1oDZgNyA34DigOWA6IDrgO6A8cD0wPgA+wD+QQGBBME
-		IAQtBDsESARVBGMEcQR+BIwEmgSoBLYExATTBOEE8AT+BQ0FHAUrBToFSQVY
-		BWcFdwWGBZYFpgW1BcUF1QXlBfYGBgYWBicGNwZIBlkGagZ7BowGnQavBsAG
-		0QbjBvUHBwcZBysHPQdPB2EHdAeGB5kHrAe/B9IH5Qf4CAsIHwgyCEYIWghu
-		CIIIlgiqCL4I0gjnCPsJEAklCToJTwlkCXkJjwmkCboJzwnlCfsKEQonCj0K
-		VApqCoEKmAquCsUK3ArzCwsLIgs5C1ELaQuAC5gLsAvIC+EL+QwSDCoMQwxc
-		DHUMjgynDMAM2QzzDQ0NJg1ADVoNdA2ODakNww3eDfgOEw4uDkkOZA5/DpsO
-		tg7SDu4PCQ8lD0EPXg96D5YPsw/PD+wQCRAmEEMQYRB+EJsQuRDXEPURExEx
-		EU8RbRGMEaoRyRHoEgcSJhJFEmQShBKjEsMS4xMDEyMTQxNjE4MTpBPFE+UU
-		BhQnFEkUahSLFK0UzhTwFRIVNBVWFXgVmxW9FeAWAxYmFkkWbBaPFrIW1hb6
-		Fx0XQRdlF4kXrhfSF/cYGxhAGGUYihivGNUY+hkgGUUZaxmRGbcZ3RoEGioa
-		URp3Gp4axRrsGxQbOxtjG4obshvaHAIcKhxSHHscoxzMHPUdHh1HHXAdmR3D
-		HeweFh5AHmoelB6+HukfEx8+H2kflB+/H+ogFSBBIGwgmCDEIPAhHCFIIXUh
-		oSHOIfsiJyJVIoIiryLdIwojOCNmI5QjwiPwJB8kTSR8JKsk2iUJJTglaCWX
-		Jccl9yYnJlcmhya3JugnGCdJJ3onqyfcKA0oPyhxKKIo1CkGKTgpaymdKdAq
-		Aio1KmgqmyrPKwIrNitpK50r0SwFLDksbiyiLNctDC1BLXYtqy3hLhYuTC6C
-		Lrcu7i8kL1ovkS/HL/4wNTBsMKQw2zESMUoxgjG6MfIyKjJjMpsy1DMNM0Yz
-		fzO4M/E0KzRlNJ402DUTNU01hzXCNf02NzZyNq426TckN2A3nDfXOBQ4UDiM
-		OMg5BTlCOX85vDn5OjY6dDqyOu87LTtrO6o76DwnPGU8pDzjPSI9YT2hPeA+
-		ID5gPqA+4D8hP2E/oj/iQCNAZECmQOdBKUFqQaxB7kIwQnJCtUL3QzpDfUPA
-		RANER0SKRM5FEkVVRZpF3kYiRmdGq0bwRzVHe0fASAVIS0iRSNdJHUljSalJ
-		8Eo3Sn1KxEsMS1NLmkviTCpMcky6TQJNSk2TTdxOJU5uTrdPAE9JT5NP3VAn
-		UHFQu1EGUVBRm1HmUjFSfFLHUxNTX1OqU/ZUQlSPVNtVKFV1VcJWD1ZcVqlW
-		91dEV5JX4FgvWH1Yy1kaWWlZuFoHWlZaplr1W0VblVvlXDVchlzWXSddeF3J
-		XhpebF69Xw9fYV+zYAVgV2CqYPxhT2GiYfViSWKcYvBjQ2OXY+tkQGSUZOll
-		PWWSZedmPWaSZuhnPWeTZ+loP2iWaOxpQ2maafFqSGqfavdrT2una/9sV2yv
-		bQhtYG25bhJua27Ebx5veG/RcCtwhnDgcTpxlXHwcktypnMBc11zuHQUdHB0
-		zHUodYV14XY+dpt2+HdWd7N4EXhueMx5KnmJeed6RnqlewR7Y3vCfCF8gXzh
-		fUF9oX4BfmJ+wn8jf4R/5YBHgKiBCoFrgc2CMIKSgvSDV4O6hB2EgITjhUeF
-		q4YOhnKG14c7h5+IBIhpiM6JM4mZif6KZIrKizCLlov8jGOMyo0xjZiN/45m
-		js6PNo+ekAaQbpDWkT+RqJIRknqS45NNk7aUIJSKlPSVX5XJljSWn5cKl3WX
-		4JhMmLiZJJmQmfyaaJrVm0Kbr5wcnImc951kndKeQJ6unx2fi5/6oGmg2KFH
-		obaiJqKWowajdqPmpFakx6U4pammGqaLpv2nbqfgqFKoxKk3qamqHKqPqwKr
-		davprFys0K1ErbiuLa6hrxavi7AAsHWw6rFgsdayS7LCszizrrQltJy1E7WK
-		tgG2ebbwt2i34LhZuNG5SrnCuju6tbsuu6e8IbybvRW9j74KvoS+/796v/XA
-		cMDswWfB48JfwtvDWMPUxFHEzsVLxcjGRsbDx0HHv8g9yLzJOsm5yjjKt8s2
-		y7bMNcy1zTXNtc42zrbPN8+40DnQutE80b7SP9LB00TTxtRJ1MvVTtXR1lXW
-		2Ndc1+DYZNjo2WzZ8dp22vvbgNwF3IrdEN2W3hzeot8p36/gNuC94UThzOJT
-		4tvjY+Pr5HPk/OWE5g3mlucf56noMui86Ubp0Opb6uXrcOv77IbtEe2c7iju
-		tO9A78zwWPDl8XLx//KM8xnzp/Q09ML1UPXe9m32+/eK+Bn4qPk4+cf6V/rn
-		+3f8B/yY/Sn9uv5L/tz/bf//0iorLC1aJGNsYXNzbmFtZVgkY2xhc3Nlc1xO
-		U0NvbG9yU3BhY2WiLi9cTlNDb2xvclNwYWNlWE5TT2JqZWN00iorMTJXTlND
-		b2xvcqIxLwAIABEAGgAkACkAMgA3AEkATABRAFMAXQBjAG4AdQCBAI4AnACk
-		AKYAqACqAKwArgC1AMkA1ADhAOcA/AEGATEBMwE1ATcBPgFDAUkBSwFNAU8N
-		mw2gDasNtA3BDcQN0Q3aDd8N5wAAAAAAAAIBAAAAAAAAADMAAAAAAAAAAAAA
-		AAAAAA3q
-		</data>
-		<key>backgroundColorName</key>
-		<string>systemOrangeColor</string>
-		<key>inputTypeIdentifier</key>
-		<string>com.apple.Automator.nothing</string>
-		<key>outputTypeIdentifier</key>
-		<string>com.apple.Automator.nothing</string>
-		<key>presentationMode</key>
-		<integer>11</integer>
-		<key>processesInput</key>
-		<integer>0</integer>
-		<key>serviceInputTypeIdentifier</key>
-		<string>com.apple.Automator.nothing</string>
-		<key>serviceOutputTypeIdentifier</key>
-		<string>com.apple.Automator.nothing</string>
-		<key>serviceProcessesInput</key>
-		<integer>0</integer>
-		<key>systemImageName</key>
-		<string>NSTouchBarPlay</string>
-		<key>useAutomaticInputType</key>
-		<integer>1</integer>
-		<key>workflowTypeIdentifier</key>
-		<string>com.apple.Automator.servicesMenu</string>
-	</dict>
-</dict>
-</plist>

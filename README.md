@@ -1,23 +1,16 @@
-# TaskBoxes
+# Task Boxes Basic
 
 This free tool is to see whether macOS 10.15 Quick Actions are so seamless they result in regular use of Task Boxes as a productivity tool.
 
-## How to Run
+## Actions
 
-The Install directory contains automated install scripts.
-The Code directory contains the code for modification and manual setup.
 
-### From Code
 
-1. Create an Automator Quick Action called Start Task. In Automator search for Run JavaScript action. In the JavaScript box that is added copy and paste the extras/jxa_quickaction_python.js.
-2. Copy dir "Start Task Python" to dir "~/Library/Scripts"
-3. Create dir "~/Documents/Task Boxes" to hold your tasks
-4. Generate credentials and a token.pickle from [Google Quickstart](https://developers.google.com/calendar/quickstart/python)
-5. Edit calendar_id in main.py
-6. Generate the venv folder based on requirements.txt
-7. Create the required logs folder
+## Changelog
 
-## Change Log
+### 0.3 [2020/11/23]
+
+* Stripped to basic version so that it can be completed before moving a web only version.
 
 ### 0.2 [2020/10/12]
 
