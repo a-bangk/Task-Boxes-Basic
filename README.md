@@ -2,15 +2,12 @@
 
 This free tool is to see whether macOS 10.15 Quick Actions are so seamless they result in regular use of Task Boxes as a productivity tool.
 
-## Actions
-
-
-
 ## Changelog
 
 ### 0.3 [2020/11/23]
 
 * Stripped to basic version so that it can be completed before moving a web only version.
+* Launches a countdown browser 
 
 ### 0.2 [2020/10/12]
 
@@ -24,7 +21,7 @@ This free tool is to see whether macOS 10.15 Quick Actions are so seamless they 
 * Remade to use python calendar event creation
 * calendar is hardcoded
 * accepts summary and description as arguments
-* Requires credentails.json file present, see How to Run
+* Requires credentials.json file present, see How to Run
 
 
 ### NA [Prior to 2020/10]
@@ -34,4 +31,4 @@ This free tool is to see whether macOS 10.15 Quick Actions are so seamless they 
 
 ## Learn JXA by Example
 
-* [JXA Snippets Collection](https://www.seamlessio.com/articles/jxa-snippets-collection)
+* [JXA Snippets Collection](https://jxa-examples.akjems.com)
