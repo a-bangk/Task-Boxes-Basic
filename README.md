@@ -4,11 +4,17 @@ Task Boxes Basic is a productivity tool leveraging Javascript for Automation and
 
 ## Usage
 
-Countdown file is available in [countdown repository](https://github.com/akjems/countdown).
+1. Create a new Quick Action with the start-task.js file
+2. Create Folder "Task Boxes" in ~/Documents/Task Boxes
 
 ## Changelog
 
-### 0.1 [2020/11/23]
+### [2020/11/29]
+
+* Replaced Quick Action with instructions to paste JS file
+* Uses website instead of requiring local file countdown
+
+### [2020/11/23]
 
 * Stripped to basic version so that it can be completed before moving a web only version.
 * Launches a countdown browser 
